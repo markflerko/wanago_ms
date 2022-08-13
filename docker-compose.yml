@@ -1,0 +1,28 @@
+version: "3"
+services:
+  postgres:
+    container_name: emails-postgres
+    image: postgres:latest
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_PASSWORD=pass123
+    networks:
+      - postgres
+
+  pgadmin:
+    links:
+      - postgres:postgres
+    container_name: emails-pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - "8082:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=markflerko@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=pass123
+    networks:
+      - postgres
+
+networks:
+  postgres:
+    driver: bridge
