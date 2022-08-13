@@ -1,23 +1,29 @@
-import { Injectable } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
+import { GrpcMethod } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import CreateSubscriberDto from './dto/createSubscriber.dto';
 import Subscriber from './subscriber.entity';
 
-@Injectable()
+@Controller()
 export class SubscribersService {
   constructor(
     @InjectRepository(Subscriber)
     private subscribersRepository: Repository<Subscriber>,
   ) {}
 
+  @GrpcMethod()
   async addSubscriber(subscriber: CreateSubscriberDto) {
     const newSubscriber = await this.subscribersRepository.create(subscriber);
     await this.subscribersRepository.save(newSubscriber);
     return newSubscriber;
   }
 
+  @GrpcMethod()
   async getAllSubscribers() {
-    return this.subscribersRepository.find();
+    const data = await this.subscribersRepository.find();
+    return {
+      data,
+    };
   }
 }
